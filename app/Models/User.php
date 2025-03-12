@@ -97,4 +97,64 @@ class User extends Authenticatable
         $this->lockout_time = now()->addMinutes($minutes);
         $this->save();
     }
+
+    /**
+     * Filter users by email.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string|null $email
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFilterByEmail($query, $email)
+    {
+        if ($email) {
+            return $query->where('email', 'like', "%{$email}%");
+        }
+
+        return $query;
+    }
+
+    /**
+     * Filter users by name.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string|null $name
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFilterByName($query, $name)
+    {
+        if ($name) {
+            return $query->where('name', 'like', "%{$name}%");
+        }
+
+        return $query;
+    }
+
+    /**
+     * Filter users by lockout status.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string|null $lockoutStatus
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFilterByLockoutStatus($query, $lockoutStatus)
+    {
+        if ($lockoutStatus) {
+            return $query->where('lockout_status', $lockoutStatus);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Paginate the user list.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int $perPage
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function scopePaginateUsers($query, $perPage = 10)
+    {
+        return $query->paginate($perPage);
+    }
 }
