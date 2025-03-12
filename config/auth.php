@@ -112,4 +112,20 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Account Lockout Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the settings for the account lockout mechanism.
+    | This feature helps prevent brute force attacks by locking the user's
+    | account after a specified number of failed login attempts.
+    |
+    */
+
+    'lockout' => [
+        'max_attempts' => 5,
+        'lockout_duration' => 15, // in minutes
+    ],
+
 ];
