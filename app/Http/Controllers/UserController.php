@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\CreateUserRequest;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -34,5 +36,39 @@ class UserController extends Controller
         });
 
         return view('user.index', compact('users'));
+    }
+
+    /**
+     * Show the user creation form.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showRegistrationForm()
+    {
+        return view('user.create');
+    }
+
+    /**
+     * Handle a user creation request.
+     *
+     * @param  \App\Http\Requests\CreateUserRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function register(CreateUserRequest $request)
+    {
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone_number' => $request->phone_number,
+            'address' => $request->address,
+            'profile_picture' => $request->profile_picture,
+            'date_of_birth' => $request->date_of_birth,
+        ]);
+
+        // Send email verification
+        $user->sendEmailVerificationNotification();
+
+        return redirect()->route('login')->with('status', 'User created successfully. Please check your email to verify your account.');
     }
 }
