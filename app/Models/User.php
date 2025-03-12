@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'lockout_time',
+        'failed_attempts',
     ];
 
     /**
@@ -43,6 +45,56 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'lockout_time' => 'datetime',
+            'failed_attempts' => 'integer',
         ];
+    }
+
+    /**
+     * Handle account lockout mechanism.
+     *
+     * @return bool
+     */
+    public function isLockedOut(): bool
+    {
+        if ($this->lockout_time && $this->lockout_time->isFuture()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Increment failed login attempts.
+     *
+     * @return void
+     */
+    public function incrementFailedAttempts(): void
+    {
+        $this->failed_attempts++;
+        $this->save();
+    }
+
+    /**
+     * Reset failed login attempts.
+     *
+     * @return void
+     */
+    public function resetFailedAttempts(): void
+    {
+        $this->failed_attempts = 0;
+        $this->save();
+    }
+
+    /**
+     * Lock the account for a specified duration.
+     *
+     * @param int $minutes
+     * @return void
+     */
+    public function lockout(int $minutes): void
+    {
+        $this->lockout_time = now()->addMinutes($minutes);
+        $this->save();
     }
 }
