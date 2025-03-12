@@ -23,6 +23,10 @@ class User extends Authenticatable
         'password',
         'lockout_time',
         'failed_attempts',
+        'phone_number',
+        'address',
+        'profile_picture',
+        'date_of_birth',
     ];
 
     /**
